@@ -86,3 +86,71 @@ describe("Sorting", function(){
 		
 	});
 });
+
+describe("Filtering", function(){
+	describe("Default filtering (all costly products)", function(){
+		function filter(){
+			var result = [];
+			for(var i=0; i<products.length; i++)
+				if (products[i].cost > 100)
+					result.push(products[i]);
+			return result;
+		}
+		var costlyProducts = filter();
+		console.table(costlyProducts);
+	});
+	describe("Any list by any criteria", function(){
+		function filter(list, criteriaFn){
+			var result = [];
+			for(var i=0; i<list.length; i++)
+				if (criteriaFn(list[i]))
+					result.push(list[i]);
+			return result;
+		}
+		function negate(criteriaFn){
+			return function(){
+				return !criteriaFn.apply(this, arguments);
+			}
+		}
+		describe("Products by cost", function(){
+			var costlyProductCriteria = function(product){
+				return product.cost > 100;
+			};
+			describe("All costly products [cost > 100]", function(){
+				var costlyProducts = filter(products, costlyProductCriteria);
+				console.table(costlyProducts);
+			});	
+
+			/*var affordableProductCriteria = function(product){
+				return !costlyProductCriteria(product);
+			};*/
+			var affordableProductCriteria = negate(costlyProductCriteria);
+
+			describe("All affordable products [ cost <= 100]", function(){
+				var affordableProducts = filter(products, affordableProductCriteria);
+				console.table(affordableProducts);
+			});
+
+
+		})
+		
+		describe("Products by category", function(){
+			var category1ProductCriteria = function(product){
+				return product.category === 1;
+			};
+			describe("All category-1 poducts", function(){
+				var category1Products = filter(products, category1ProductCriteria);
+				console.table(category1Products);
+			})
+			/*var nonCategory1ProductCriteria = function(product){
+				return !category1ProductCriteria(product);
+			};*/
+			var nonCategory1ProductCriteria = negate(category1ProductCriteria);
+			
+			describe("All non category-1 poducts", function(){
+				var nonCategory1Products = filter(products, nonCategory1ProductCriteria);
+				console.table(nonCategory1Products);
+			})
+		});
+	})
+});
