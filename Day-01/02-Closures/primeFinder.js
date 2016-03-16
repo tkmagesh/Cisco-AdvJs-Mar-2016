@@ -26,3 +26,32 @@ isPrime(101) //=> DO NOT run the algo
 isPrime(102) //=> DO NOT run the algo
 isPrime(103) //=> DO NOT run the algo
 
+
+
+var isEvenOrOdd = (function(){
+	var cache = {};
+	function checkOddEven(n){
+		console.log('processing ', n);
+		return n % 2 === 0 ? "even" : "odd";
+	}
+	return function(n){
+		if (typeof cache[n] === 'undefined')
+			cache[n] = checkOddEven(n);
+		return cache[n];
+	}
+})();
+
+function memoize(algoFn, context, keyGeneratorFn){
+	var cache = {};
+	var context = context || this;
+
+	keyGeneratorFn = keyGeneratorFn || function(value){
+		return JSON.stringify(value);
+	};
+	return function(){
+		var key = keyGeneratorFn(arguments);
+		if (typeof cache[key] === 'undefined')
+			cache[key] = algoFn.apply(context, arguments);
+		return cache[key];
+	}
+}
