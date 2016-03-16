@@ -146,11 +146,69 @@ describe("Filtering", function(){
 				return !category1ProductCriteria(product);
 			};*/
 			var nonCategory1ProductCriteria = negate(category1ProductCriteria);
-			
+
 			describe("All non category-1 poducts", function(){
 				var nonCategory1Products = filter(products, nonCategory1ProductCriteria);
 				console.table(nonCategory1Products);
 			})
 		});
-	})
+	});
+
+	describe("All", function(){
+		function all(list, criteriaFn){
+			for(var i=0; i<list.length; i++)
+				if (!criteriaFn(list[i])) return false;
+			return true;
+		}
+		describe("All all the products in category - 1", function(){
+			var category1ProductCriteria = function(product){
+				return product.category === 1;
+			};
+			console.log(all(products, category1ProductCriteria));
+		});
+	});
+	describe("Any", function(){
+		function any(list, criteriaFn){
+			for(var i=0; i<list.length; i++)
+				if (criteriaFn(list[i])) return true;
+			return false;
+		}
+		describe("Are there any category - 1 products", function(){
+			var category1ProductCriteria = function(product){
+				return product.category === 1;
+			};
+			console.log(any(products, category1ProductCriteria));
+		});
+	});
+});
+
+describe("GroupBy", function(){
+	function groupBy(list, keySelectorFn){
+		var result = {};
+		for(var i=0; i<list.length; i++){
+			var key = keySelectorFn(list[i]);
+			result[key] = result[key] || [];
+			result[key].push(list[i]);
+		}
+		return result;
+	}
+	function printGroup(group){
+		for(var key in group){
+			describe("Key - " + key, function(){
+				console.table(group[key]);
+			});
+		}
+	}
+	describe("Products by category", function(){
+		var categoryKeySelectorFn = function(product){ return product.category; };
+		var productsByCategory = groupBy(products, categoryKeySelectorFn);
+		printGroup(productsByCategory);
+	});
+	describe("Products by cost", function(){
+		var costKeySelectorFn = function(product){
+			return product.cost <= 100 ? "affordable" : "costly";
+		};
+		var productsByCost = groupBy(products, costKeySelectorFn);
+		printGroup(productsByCost);
+	});
 });
