@@ -16,3 +16,24 @@ var spinner = ....
 
 	THE VARIABLE USED TO TRACK THE VALUE SHOULD NOT BE VISIBLE TO THE OUTSIDE WORLD
 */
+
+
+var spinner = (function (){
+	var spinner = {};
+	var count = 0;
+	spinner.up = function(){
+		return ++count;
+	};
+	spinner.down = function(){
+		return --count;
+	};
+	return spinner;
+})();
+
+var spinner = (function(){
+	var count = 0;
+	return {
+		up : function(){ return ++count; },
+		down : function(){ return --count; }
+	};
+})();
